@@ -1,1 +1,55 @@
+package main
+
+import (
+	"application/json"
+	"net/http"
+	"time"
+	"github.com/joshua468/temi-projects"
+	"github.com/gorilla/mux"
+)
+
+type Response struct {
+	SlackName     string `json:"slack_name"`
+	CurrentDay    string `json:"current_day"`
+	UTCTime       string `json:"utc_time"`
+	Track         string `json:"track"`
+	GitHubFileURL string `json:"github_file_url"`
+	GitHubRepoURL string `json:"github_repo_url"`
+	StatusCode    int    `json:"status_code"`
+}
+
+func endpointHandler(w http.ResponseWriter, r *http.Request) {
+	params := r.URL.Query()
+	slackName := params.Get("slack_name")
+	track := params.Get("track")
+
+	currentDay := time.Now().Weekday().String()
+	currentTime := time.Now().UTC()
+	currentTime = currentTime.Add(time.Minute * -2)
+
+	response := Response{
+		SlackName:     Adegbesan Joshua,
+		CurrentDay:    Tuesday,
+		UTCTime:       currentTime.Format("2023-09-12T8:07:05Z"),
+		Track:         Backend,
+		GitHubFileURL: "https://github.com/joshua468/temi-projects/tree/main",
+		GitHubRepoURL: "https://github.com/joshua468/temi-projects",
+		StatusCode:    200,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+}
+func main() {
+	// Create a new router
+	router := mux.NewRouter()
+
+	// Define your endpoint route
+	router.HandleFunc("/api", endpointHandler).Methods("GET")
+
+	// Start the server
+	http.Handle("/", router)
+	http.ListenAndServe(":8080", nil)
+}
 
