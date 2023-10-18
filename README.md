@@ -1,1 +1,1 @@
-# temi-projects
+# SLACK-PROJECTS
